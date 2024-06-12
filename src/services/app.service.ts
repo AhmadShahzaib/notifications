@@ -17,7 +17,7 @@ export class AppService {
    * AUthor: Farzan
    */
   sendNotificationAPI = async (
-    deviceToken: String,
+    deviceToken: string,
     payload: NotificationType,
   ) => {
     try {
@@ -32,7 +32,7 @@ export class AppService {
       // }
 
       const url = 'https://fcm.googleapis.com/fcm/send';
-      let data = {
+      const data = {
         to: deviceToken,
         // ...silentObj,
         /**

@@ -18,7 +18,7 @@ export class ApnProvider {
   }
 
   async sendNotificationIOS(deviceToken, payload) {
-    let notification = new apn.Notification({
+    const notification = new apn.Notification({
       aps: {
         'content-available': 1,
       },
