@@ -5,10 +5,10 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-# steps:
-# - publish: '$(System.DefaultWorkingDirectory)'
-#   artifact: notifications
 steps:
+- publish: '$(System.DefaultWorkingDirectory)'
+  artifact: notifications
+  
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
@@ -18,9 +18,3 @@ steps:
     npm run lint
     npm run build
   displayName: Npm commands
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
-    ArtifactName: 'notifications'
-    publishLocation: 'Container'
-  condition: succeeded()
