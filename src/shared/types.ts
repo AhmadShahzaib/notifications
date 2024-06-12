@@ -1,5 +1,5 @@
 export type NotificationType = {
     isSilent: any;
-    title: String;
+    title: string;
     body: Object;
 };
