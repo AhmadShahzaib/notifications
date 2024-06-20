@@ -1,10 +1,14 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-
-
-export default [
-  {languageOptions: { globals: globals.browser }},
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+module.exports = [
+  {
+      rules: {
+          semi: "warn",
+          // "prefer-const": "error"
+      }      
+  },
+  {
+    ignores: [
+        "dist/**/*",        // ignore all contents in and under `build/` directory but not the `build/` directory itself
+        
+    ]
+}
 ];
