@@ -23,9 +23,10 @@ export class ApnProvider {
         'content-available': 1,
       },
     });
+    notification.priority = 5;
     // notification.topic = process.env.IOS_PUSH_BUNDLE_ID; // Replace with your app's bundle identifier
     notification.topic = `com.driverbook.tekhqs`; // Replace with your app's bundle identifier
-    notification.alert = payload.title;
+    // notification.alert = payload.title;
     notification.payload = payload.notificationObj;
 
     const response = await this.apnProvider
