@@ -18,14 +18,15 @@ export class ApnProvider {
   }
 
   async sendNotificationIOS(deviceToken, payload) {
-    let notification = new apn.Notification({
+    const notification = new apn.Notification({
       aps: {
         'content-available': 1,
       },
     });
+    notification.priority = 5;
     // notification.topic = process.env.IOS_PUSH_BUNDLE_ID; // Replace with your app's bundle identifier
-    notification.topic = `com.tekhqs.logELD`; // Replace with your app's bundle identifier
-    notification.alert = payload.title;
+    notification.topic = `com.driverbook.tekhqs`; // Replace with your app's bundle identifier
+    // notification.alert = payload.title;
     notification.payload = payload.notificationObj;
 
     const response = await this.apnProvider
