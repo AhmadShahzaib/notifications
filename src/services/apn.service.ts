@@ -28,7 +28,7 @@ export class ApnProvider {
     notification.topic = `com.driverbook.tekhqs`; // Replace with your app's bundle identifier
     // notification.alert = payload.title;
     notification.payload = payload.notificationObj;
-
+Logger.log( notification.topic);
     const response = await this.apnProvider
       .send(notification, [deviceToken])
       .then((success) => {
