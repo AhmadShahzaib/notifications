@@ -10,7 +10,8 @@ import {
 
 import { Transport } from '@nestjs/microservices';
 import configureSwagger from './swaggerConfigurations';
-
+import {initializeApp, applicationDefault } from 'firebase-admin/app';
+import { getMessaging } from "firebase-admin/messaging";
 import * as requestIp from 'request-ip';
 import { json } from 'express';
 import { CustomInterceptor } from 'utils/customInterceptor';
@@ -36,6 +37,7 @@ async function bootstrap() {
   await app.startAllMicroservices();
   console.log('Microservice is listening');
   app.enableCors();
+  
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
   app.use(requestIp.mw());
 
@@ -56,6 +58,10 @@ async function bootstrap() {
 
   // Convert all JSON object keys to snake_case
   // app.useGlobalInterceptors(new SnakeCaseInterceptor());
+  initializeApp({
+    credential: applicationDefault(),
+    projectId: 'potion-for-creators',
+  });
   app.use(CustomInterceptor);
   await app.listen(AppModule.port);
 
