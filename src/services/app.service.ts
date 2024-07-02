@@ -3,6 +3,8 @@ import { HttpService } from '@nestjs/axios';
 import * as jwt from 'jsonwebtoken';
 import {initializeApp, applicationDefault } from 'firebase-admin/app';
 import { getMessaging } from "firebase-admin/messaging";
+import admin from 'firebase-admin';
+
 import { firstValueFrom } from 'rxjs';
 import { ConfigurationService } from '@shafiqrathore/logeld-tenantbackend-common-future';
 import { NotificationType } from 'shared/types';
@@ -22,7 +24,9 @@ export class AppService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configurationService: ConfigurationService,
-  ) {}
+  ) {
+
+  }
 
 
   async  mainFunc() {
@@ -47,8 +51,9 @@ export class AppService {
     payload: NotificationType,
   ) => {
     try {
+      
       // const accessToken = await this.getAccessToken();
-  
+     
       // const options = {
       //   hostname: HOST,
       //   path: PATH,
@@ -59,27 +64,28 @@ export class AppService {
       //   },
       //   // [END use_access_token]
       // };
-      const message = {
-        notification: {
-          title: "Notif",
-          body: 'This is a Test Notification'
-        },
-        token: "YOUR FCM TOKEN HERE",
-      };
+      // const message = {
+      //   notification: {
+      //     title: "Notif",
+      //     body: 'This is a Test Notification'
+      //   },
+      //   token: "YOUR FCM TOKEN HERE",
+      // };
       
-      getMessaging()
-        .send(message)
-        .then((response) => {
-          console.log("Successfully sent message:", response);
-         return {
-            message: "Successfully sent message",
-            token: deviceToken,
-          };
-        })
-        .catch((error) => {
+      let message = await this.sendNotif(deviceToken, payload,"title", "data");
+      // getMessaging()
+      //   .send(message)
+      //   .then((response) => {
+      //     console.log("Successfully sent message:", response);
+      //    return {
+      //       message: "Successfully sent message",
+      //       token: deviceToken,
+      //     };
+      //   })
+      //   .catch((error) => {
          
-          console.log("Error sending message:", error);
-        });
+      //     console.log("Error sending message:", error);
+      //   });
       
     //  await this.mainFunc().catch(console.error);
       // const request = await https.request(options, function(resp) {
@@ -113,6 +119,37 @@ export class AppService {
 
       // return response;
     } catch (error) {
+      throw error;
+    }
+  };
+  sendNotif = async (token,payload, title, body) => {
+    try {
+      if (!token || typeof token !== 'string') {
+        throw new Error('Invalid FCM token provided');
+      }
+      payload
+      let bodyData = JSON.stringify(payload.notificationObj)
+      const message = {
+        notification: {
+         
+          body: bodyData,
+         
+        },
+        android: {
+          // notification: {
+          //   sound: "default",
+          // },
+          data: {
+           
+            body: body,
+          },
+        },
+        token: token,
+      };
+      const response = await admin.messaging().send(message);
+      console.log("Successfully sent message:", response);
+    } catch (error) {
+      console.error("Error sending message:", error.message);
       throw error;
     }
   };
