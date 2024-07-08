@@ -35,7 +35,7 @@ export class AppController extends BaseController {
         deviceToken,
         data,
       );
-      response = result.data;
+      response = true;
     } catch (error) {
       Logger.error({ message: error.message, stack: error.stack });
       response = error;
@@ -83,7 +83,7 @@ export class AppController extends BaseController {
       );
       return response.status(200).send({
         message: 'Success',
-        data: result.data,
+        // data: result.data,
       });
     } catch (error) {
       throw error;
