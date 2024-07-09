@@ -10,7 +10,9 @@ import {
 
 import { Transport } from '@nestjs/microservices';
 import configureSwagger from './swaggerConfigurations';
-
+// import { initializeApp, applicationDefault } from 'firebase-admin/app';
+// import { getMessaging } from 'firebase-admin/messaging';
+import admin from 'firebase-admin';
 import * as requestIp from 'request-ip';
 import { json } from 'express';
 import { CustomInterceptor } from 'utils/customInterceptor';
@@ -25,7 +27,7 @@ async function bootstrap() {
   //   mongoose.set('debug', true);
   // }
 
-  app.connectMicroservice({ 
+  app.connectMicroservice({
     transport: Transport.TCP,
     options: {
       port: conf.get('SELF_MICROSERVICE_PORT'),
@@ -36,6 +38,7 @@ async function bootstrap() {
   await app.startAllMicroservices();
   console.log('Microservice is listening');
   app.enableCors();
+
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
   app.use(requestIp.mw());
 
@@ -53,15 +56,23 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new MongoExceptionFilter());
   // app.useGlobalFilters(new BaseWsExceptionFilter())
-
+  const serviceAccount = require('./utils/service-account.json'); 
+  admin.initializeApp({
+    
+    credential: admin.credential.cert(serviceAccount),
+  });
   // Convert all JSON object keys to snake_case
   // app.useGlobalInterceptors(new SnakeCaseInterceptor());
+  // initializeApp({
+  //   credential: applicationDefault(),
+  //   projectId: 'potion-for-creators',
+  // });
   app.use(CustomInterceptor);
   await app.listen(AppModule.port);
 
   // Log current url of app
   let baseUrl = app.getHttpServer().address().address;
-  
+
   if (baseUrl === '0.0.0.0' || baseUrl === '::') {
     baseUrl = 'localhost';
   }
